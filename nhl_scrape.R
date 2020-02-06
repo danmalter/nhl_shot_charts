@@ -5,11 +5,11 @@ library(RSQLite)
 library(data.table)
 
 # Get Rinks
-source('~/Documents/nhl/draw_rink.R')
-source('~/Documents/nhl/gg-rink.R')
+source('~/GitHub/nhl_shot_charts/draw_rink.R')
+source('~/GitHub/nhl_shot_charts/gg-rink.R')
 
 # Set db path to somewhere
-SetDbPath("~/Documents/nhl/data/nhl.sqlite")
+SetDbPath("~/GitHub/nhl_shot_charts/data/nhl2019_2020.sqlite")
 
 # Select the leafs
 AddAllTeamsDb()
@@ -44,8 +44,8 @@ player_id <- GetPlayerId("jonathan toews")
 stats <- GetPlayerStats(player_id, gids, team_id)
 
 ### Extract data from SQLite Table ###
-setwd('~/Documents/nhl/data/')
-mydb <- dbConnect(RSQLite::SQLite(), "nhl.sqlite")
+setwd('~/GitHub/nhl_shot_charts/data/')
+mydb <- dbConnect(RSQLite::SQLite(), "nhl2019_2020.sqlite")
 events <- dbGetQuery(mydb, 'SELECT *
                             FROM events')
 players <- dbGetQuery(mydb, 'SELECT * FROM players')
@@ -66,7 +66,7 @@ ggplot(shots, aes(x = coordinates_x, y = coordinates_y)) +
        subtitle = paste(format(min(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), sep=' '),
        x = NULL,
        y = NULL) +
-  scale_color_manual(values = c("Shot" = "black", "Goal" = "green"),
+  scale_color_manual(values = c("Shot" = "black", "Goal" = "darkgreen"),
                      name = NULL) +
   scale_shape_manual(values = c("Shot" = 4, "Goal" = 16),
                      name = NULL, ) +
@@ -111,7 +111,7 @@ p <- ggplot(shots, aes(x = coordinates_x, y = coordinates_y,
        x = NULL,
        y = NULL) +
   annotate("text", x = 2.5, y = -50, label = paste(format(min(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), sep=' ')) + 
-  scale_color_manual(values = c("Shot" = "black", "Goal" = "green"),
+  scale_color_manual(values = c("Shot" = "black", "Goal" = "nhl2019_2020"),
                      name = NULL) +
   scale_shape_manual(values = c("Shot" = 4, "Goal" = 16),
                      name = NULL, ) +
