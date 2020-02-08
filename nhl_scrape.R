@@ -4,6 +4,7 @@ library(ggplot2)
 library(RSQLite)
 library(data.table)
 library(plotly)
+library(lubridate)
 
 # Get Rinks
 #source('~/GitHub/nhl_shot_charts/draw_rink.R')
@@ -52,11 +53,15 @@ events <- dbGetQuery(mydb, 'SELECT *
 players <- dbGetQuery(mydb, 'SELECT * FROM players')
 teams <- dbGetQuery(mydb, 'SELECT * FROM teams')
 
+# change datetime format from UTC to EST
+events$about_dateTime <- ymd_hms(events$about_dateTime, tz = "America/New_York")
+events$about_dateTime <- as.Date(events$about_dateTime, "EST")
+
 shots <- events %>%
   # remove shots below goal line
   filter(abs(coordinates_x) <= 90) %>%
   filter(result_event == 'Shot' | result_event == 'Goal' & (playerType == 'Scorer' | playerType == 'Shooter')) %>%
-  filter(player_fullName == 'Alex Ovechkin')
+  filter(player_fullName == 'J.T. Compher')
 
 shots <- shots %>% group_by(result_event) %>% mutate(shot_type_count = n())  # get count by group to order point layers in ggplot
 
@@ -133,7 +138,7 @@ ggplot(shots, aes(x = coordinates_x, y = coordinates_y)) +
   geom_point(aes(color = result_event , shape = result_event),
              position = "jitter", size = 2, alpha = 1, stroke = .5) +
   labs(title = paste(shots$player_fullName, "- Shot Chart", sep=" "),
-       subtitle = paste(format(min(as.Date(shots$about_dateTime) - 1), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime) - 1), format = "%m/%d/%Y"), sep=' '), # time is in UTC to subtract one day 
+       subtitle = paste(min(shots$about_dateTime), 'to', max(shots$about_dateTime), sep=' '), # time is in UTC to subtract one day 
        x = NULL,
        y = NULL) +
   scale_color_manual(values = c("Shot" = shot_color, "Goal" = goal_color),
@@ -180,7 +185,7 @@ p <- ggplot(shots, aes(x = coordinates_x, y = coordinates_y,
   labs(x = NULL,
        y = NULL) +
   annotate("text", x = 2.5, y = 50, size = 4.75, label = paste(shots$player_fullName, "- Shot Chart", sep=" ")) +
-  annotate("text", x = 2.5, y = -50, label = paste(format(min(as.Date(shots$about_dateTime) - 1), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime) - 1), format = "%m/%d/%Y"), sep=' ')) + 
+  annotate("text", x = 2.5, y = -50, label = paste(min(shots$about_dateTime), 'to', max(shots$about_dateTime), sep=' ')) + 
   scale_color_manual(values = c("Shot" = shot_color, "Goal" = goal_color),
                      name = NULL) +
   scale_shape_manual(values = c("Shot" = 4, "Goal" = 16),
