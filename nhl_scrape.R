@@ -5,7 +5,7 @@ library(RSQLite)
 library(data.table)
 
 # Get Rinks
-source('~/GitHub/nhl_shot_charts/draw_rink.R')
+#source('~/GitHub/nhl_shot_charts/draw_rink.R')
 source('~/GitHub/nhl_shot_charts/gg-rink.R')
 
 # Set db path to somewhere
@@ -26,7 +26,7 @@ team_list <- list("NJD", "NYI", "NYR", "PHI", "PIT", "BOS", "BUF", "MTL", "OTT",
 team_id_list <- list()
 for (team in team_list){
   team_id <- GetTeamId(team)
-  gids <- GetGameIdRange(team_id, "2020-02-04", "2020-02-04")
+  gids <- GetGameIdRange(team_id, "2020-02-06", "2020-02-06")
   ps <- team  ## where i is whatever your ps is
   team_id_list[[team]] <- gids
 }
@@ -55,21 +55,89 @@ shots <- events %>%
   # remove shots below goal line
   filter(abs(coordinates_x) <= 90) %>%
   filter(result_event == 'Shot' | result_event == 'Goal' & (playerType == 'Scorer' | playerType == 'Shooter')) %>%
-  filter(player_fullName == 'J.T. Compher')
+  filter(player_fullName == 'Leon Draisaitl')
+
+
+# team colors - https://teamcolorcodes.com/nhl-team-color-codes/
+shot_color <- unique(ifelse(shots$team_triCode == 'NJD', "#CE1126", 
+                            ifelse(shots$team_triCode == "NYI",  "#00539B",
+                            ifelse(shots$team_triCode == "NYR",  "#0038A8",
+                            ifelse(shots$team_triCode == "PHI",  "#F74902",
+                            ifelse(shots$team_triCode == "PIT",  "#000000",
+                            ifelse(shots$team_triCode == "BOS",  "#FFB81C",
+                            ifelse(shots$team_triCode == "BUF",  "#002654",
+                            ifelse(shots$team_triCode == "MTL",  "#AF1E2D",
+                            ifelse(shots$team_triCode == "OTT",  "#C52032",
+                            ifelse(shots$team_triCode == "TOR",  "#00205B",
+                            ifelse(shots$team_triCode == "CAR",  "#CC0000",
+                            ifelse(shots$team_triCode == "FLA",  "#041E42",
+                            ifelse(shots$team_triCode == "TBL",  "#002868",
+                            ifelse(shots$team_triCode == "WSH",  "#041E42",
+                            ifelse(shots$team_triCode == "CHI",  "#CF0A2C",
+                            ifelse(shots$team_triCode == "DET",  "#CE1126",
+                            ifelse(shots$team_triCode == "NSH",  "#FFB81C",
+                            ifelse(shots$team_triCode == "STL",  "#002F87",
+                            ifelse(shots$team_triCode == "CGY",  "#F1BE48",
+                            ifelse(shots$team_triCode == "COL",  "#236192",
+                            ifelse(shots$team_triCode == "EDM",  "#041E42",
+                            ifelse(shots$team_triCode == "VAN",  "#00205B",
+                            ifelse(shots$team_triCode == "ANA",  "#F47A38",
+                            ifelse(shots$team_triCode == "DAL",  "#006847",
+                            ifelse(shots$team_triCode == "LAK",  "#111111",
+                            ifelse(shots$team_triCode == "SJS",  "#006D75",
+                            ifelse(shots$team_triCode == "CBJ",  "#002654",
+                            ifelse(shots$team_triCode == "MIN",  "#A6192E",
+                            ifelse(shots$team_triCode == "WPG",  "#041E42",
+                            ifelse(shots$team_triCode == "ARI",  "#8C2633",
+                            ifelse(shots$team_triCode == "VGK",  "#B4975A",
+                            "grey"))))))))))))))))))))))))))))))))
+                            
+goal_color <- unique(ifelse(shots$team_triCode == 'NJD', "##000000", 
+                            ifelse(shots$team_triCode == "NYI",  "#F47D30",
+                            ifelse(shots$team_triCode == "NYR",  "#CE1126",
+                            ifelse(shots$team_triCode == "PHI",  "#000000",
+                            ifelse(shots$team_triCode == "PIT",  "#FCB514",
+                            ifelse(shots$team_triCode == "BOS",  "#000000",
+                            ifelse(shots$team_triCode == "BUF",  "#FCB514",
+                            ifelse(shots$team_triCode == "MTL",  "#192168",
+                            ifelse(shots$team_triCode == "OTT",  "#000000",
+                            ifelse(shots$team_triCode == "TOR",  "#000000",
+                            ifelse(shots$team_triCode == "CAR",  "#000000",
+                            ifelse(shots$team_triCode == "FLA",  "#C8102E",
+                            ifelse(shots$team_triCode == "TBL",  "#000000",
+                            ifelse(shots$team_triCode == "WSH",  "#C8102E",
+                            ifelse(shots$team_triCode == "CHI",  "#000000",
+                            ifelse(shots$team_triCode == "DET",  "#000000",
+                            ifelse(shots$team_triCode == "NSH",  "#041E42",
+                            ifelse(shots$team_triCode == "STL",  "#FCB514",
+                            ifelse(shots$team_triCode == "CGY",  "#000000",
+                            ifelse(shots$team_triCode == "COL",  "#6F263D",
+                            ifelse(shots$team_triCode == "EDM",  "#FF4C00",
+                            ifelse(shots$team_triCode == "VAN",  "#99999A",
+                            ifelse(shots$team_triCode == "ANA",  "#000000",
+                            ifelse(shots$team_triCode == "DAL",  "#111111",
+                            ifelse(shots$team_triCode == "LAK",  "#A2AAAD",
+                            ifelse(shots$team_triCode == "SJS",  "#000000",
+                            ifelse(shots$team_triCode == "CBJ",  "#CE1126",
+                            ifelse(shots$team_triCode == "MIN",  "#154734",
+                            ifelse(shots$team_triCode == "WPG",  "#AC162C",
+                            ifelse(shots$team_triCode == "ARI",  "#111111",
+                            ifelse(shots$team_triCode == "VGK",  "#000000",
+                            "darkgreen"))))))))))))))))))))))))))))))))
 
 ggplot(shots, aes(x = coordinates_x, y = coordinates_y)) +
   gg_rink(side = "right", specs = "nhl") +
   gg_rink(side = "left", specs = "nhl") +
   geom_point(aes(color = result_event , shape = result_event),
-             position = "jitter", size = 1.5, alpha = .75, stroke = .5) +
+             position = "jitter", size = 2, alpha = 1, stroke = .5) +
   labs(title = paste(shots$player_fullName, "- Shot Chart", sep=" "),
        subtitle = paste(format(min(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), sep=' '),
        x = NULL,
        y = NULL) +
-  scale_color_manual(values = c("Shot" = "black", "Goal" = "darkgreen"),
+  scale_color_manual(values = c("Shot" = shot_color, "Goal" = goal_color),
                      name = NULL) +
   scale_shape_manual(values = c("Shot" = 4, "Goal" = 16),
-                     name = NULL, ) +
+                     name = NULL) +
   scale_x_continuous(breaks = seq(-30, 30, by = 5)) +
   scale_y_continuous(breaks = seq(-15, 15, by = 3)) + 
   theme(legend.title=element_blank(),
@@ -102,16 +170,17 @@ p <- ggplot(shots, aes(x = coordinates_x, y = coordinates_y,
                                     '<br>Period: ', about_period,
                                     '<br>Away Goals: ', about_goals_away, 
                                     '<br>Home Goals (goal included if scored): ', about_goals_home,
+                                    '<br>Team Name: ', team_name, 
                                     '<br>Description: ', result_description))) +
   gg_rink(side = "right", specs = "nhl") +
   gg_rink(side = "left", specs = "nhl") +
   geom_point(aes(color = result_event , shape = result_event),
-             position = "jitter", size = 1.5, alpha = .75, stroke = .5) +
+             position = "jitter", size = 2, alpha = 1, stroke = .5) +
   labs(title = paste(shots$player_fullName, "- Shot Chart", sep=" "),
        x = NULL,
        y = NULL) +
   annotate("text", x = 2.5, y = -50, label = paste(format(min(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), 'to', format(max(as.Date(shots$about_dateTime)), format = "%m/%d/%Y"), sep=' ')) + 
-  scale_color_manual(values = c("Shot" = "black", "Goal" = "nhl2019_2020"),
+  scale_color_manual(values = c("Shot" = shot_color, "Goal" = goal_color),
                      name = NULL) +
   scale_shape_manual(values = c("Shot" = 4, "Goal" = 16),
                      name = NULL, ) +

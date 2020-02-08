@@ -194,28 +194,28 @@ gg_rink <- function(side = "right", specs = "nhl"){
       "segment",
       x = x_blue*side, y = y_max,
       xend = x_blue*side, yend = y_min,
-      color = "blue", size = 2
+      color = "blue", size = 2, alpha = 0.3
     ),
     ### ref crease
     annotate(
       "path",
       x = r_ref*cos(seq(pi/2, 0, length = nsteps))*side,
       y = y_min + r_ref*sin(seq(pi/2, 0, length = nsteps)),
-      color = "red"
+      color = "red", alpha = 0.3
     ),
     ### face-off circle, center ice
     annotate(
       "path",
       x = r_faceoff*cos(seq(pi/2, -pi/2, length = nsteps))*side,
       y = r_faceoff*sin(seq(pi/2, -pi/2, length = nsteps)),
-      color = "blue"
+      color = "blue", alpha = 0.3
     ),
     ### center line:
     annotate(
       "segment",
       x = 0, y = y_max,
       xend = 0, yend = y_min,
-      color = "red", size = 2
+      color = "red", size = 2, alpha = 0.3
     ),
     switch(specs,
            "nhl" = annotate(
@@ -238,14 +238,15 @@ gg_rink <- function(side = "right", specs = "nhl"){
       "point",
       x = 0,
       y = 0,
-      color = "blue", size = 1
+      color = "blue", size = 1,
+      alpha = 0.3
     ),
     ### neutral zone dots
     annotate(
       "point",
       x = (x_blue - x_dot_neutral)*side,
       y = y_faceoff_dot*c(1, -1),
-      color = "red", size = 1
+      color = "red", size = 1, alpha = 0.3
     ),
     ### side boards
     annotate(
@@ -261,7 +262,7 @@ gg_rink <- function(side = "right", specs = "nhl"){
       "segment",
       x = x_goal*side, y = y_goal,
       xend = x_goal*side, yend = -y_goal,
-      color = "red"
+      color = "red", alpha = 0.3
     ),
     # connect ends
     annotate(
@@ -291,7 +292,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
       y = crease_start_y*c(-1, 1),
       xend = (x_goal - crease_end)*side,
       yend = crease_start_y*c(-1, 1),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     ),
     # crease lines
     annotate(
@@ -300,14 +302,14 @@ gg_rink <- function(side = "right", specs = "nhl"){
       y = crease_start_y*c(-1, 1),
       xend = (x_goal - crease_small_start)*side,
       yend = (crease_start_y - crease_small_length)*c(-1, 1),
-      col = "red"
+      col = "red", alpha = 0.3
     ),
     # semi-circle starting 137cm out with 183cm radius from center of goal line
     annotate(
       "path",
       x = (x_goal + r_crease*cos(crease_angles))*side,
       y = r_crease*sin(crease_angles),
-      col = "red"
+      col = "red", alpha = 0.3
     ),
     if (specs == "nhl") {
       ### restricted area (NHL only)
@@ -315,7 +317,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
         "segment",
         x = x_goal*side, y = y_traps_start*c(-1, 1),
         xend = x_max*side, yend = y_traps_end*c(-1, 1),
-        color = "red"
+        color = "red",
+        alpha = 0.3
       )
     },
     ### net
@@ -340,7 +343,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
       x = x_faceoff_dot*side,
       y = y_faceoff_dot*c(1, -1),
       col = "red",
-      size = 1
+      size = 1,
+      alpha = 0.3
     ),
     # circles 
     annotate(
@@ -348,14 +352,16 @@ gg_rink <- function(side = "right", specs = "nhl"){
       "path",
       x = side*(x_faceoff_dot + r_faceoff*cos(circle)),
       y = y_faceoff_dot + r_faceoff*sin(circle),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     ),
     annotate(
       # bottom
       "path",
       x = side*(x_faceoff_dot + r_faceoff*cos(circle)),
       y = -(y_faceoff_dot + r_faceoff*sin(circle)),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     ),
     # hashes
     annotate(
@@ -369,7 +375,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
       ),
       yend = (y_faceoff_dot + (y_hash + hash_length)*c(1, -1))*
         rep(c(1, 1, -1, -1), times = 2),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     ),
     ## inner lines
     # parallel to side boards
@@ -387,7 +394,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
       ),
       yend = (y_faceoff_dot + inner_start_y*c(1, -1))*
         rep(c(1, 1, -1, -1), times = 2),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     ),
     annotate(
       # parallel to end boards
@@ -402,7 +410,8 @@ gg_rink <- function(side = "right", specs = "nhl"){
       ),
       yend = (y_faceoff_dot + (inner_start_y + par_end_length)*c(1, -1))*
         rep(c(1, 1, -1, -1), times = 2),
-      col = "red"
+      col = "red",
+      alpha = 0.3
     )
   )
 }
