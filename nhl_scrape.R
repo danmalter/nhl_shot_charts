@@ -12,8 +12,8 @@ source('~/GitHub/nhl_shot_charts/gg-rink.R')
 # Set db path to somewhere
 SetDbPath("~/GitHub/nhl_shot_charts/data/nhl2019_2020.sqlite")
 
-# Select the leafs
-AddAllTeamsDb()
+# Select all teams
+#AddAllTeamsDb()
 
 # Add single game
 # team_id <- GetTeamId("CHI")
@@ -27,7 +27,7 @@ team_list <- list("NJD", "NYI", "NYR", "PHI", "PIT", "BOS", "BUF", "MTL", "OTT",
 team_id_list <- list()
 for (team in team_list){
   team_id <- GetTeamId(team)
-  gids <- GetGameIdRange(team_id, "2020-02-06", "2020-02-06")
+  gids <- GetGameIdRange(team_id, "2020-02-07", "2020-02-07")
   ps <- team  ## where i is whatever your ps is
   team_id_list[[team]] <- gids
 }
@@ -56,8 +56,9 @@ shots <- events %>%
   # remove shots below goal line
   filter(abs(coordinates_x) <= 90) %>%
   filter(result_event == 'Shot' | result_event == 'Goal' & (playerType == 'Scorer' | playerType == 'Shooter')) %>%
-  filter(player_fullName == 'J.T. Compher')
+  filter(player_fullName == 'Alex Ovechkin')
 
+shots <- shots %>% group_by(result_event) %>% mutate(shot_type_count = n())  # get count by group to order point layers in ggplot
 
 # team colors - https://teamcolorcodes.com/nhl-team-color-codes/
 shot_color <- unique(ifelse(shots$team_triCode == 'NJD', "#CE1126", 
@@ -125,7 +126,6 @@ goal_color <- unique(ifelse(shots$team_triCode == 'NJD', "##000000",
                             ifelse(shots$team_triCode == "ARI",  "#111111",
                             ifelse(shots$team_triCode == "VGK",  "#000000",
                             "darkgreen"))))))))))))))))))))))))))))))))
-
 
 ggplot(shots, aes(x = coordinates_x, y = coordinates_y)) +
   gg_rink(side = "right", specs = "nhl") +
