@@ -11,7 +11,7 @@ library(lubridate)
 source('~/GitHub/nhl_shot_charts/gg-rink.R')
 
 # Set db path to somewhere
-SetDbPath("~/GitHub/nhl_shot_charts/data/nhl2019_2020.sqlite")
+SetDbPath("~/GitHub/nhl_shot_charts/NHLShotCharts/data/nhl2019_2020.sqlite")
 
 # Select all teams
 #AddAllTeamsDb()
@@ -28,7 +28,7 @@ team_list <- list("NJD", "NYI", "NYR", "PHI", "PIT", "BOS", "BUF", "MTL", "OTT",
 team_id_list <- list()
 for (team in team_list){
   team_id <- GetTeamId(team)
-  gids <- GetGameIdRange(team_id, "2020-02-07", "2020-02-07")
+  gids <- GetGameIdRange(team_id, "2020-02-09", "2020-02-09")
   ps <- team  ## where i is whatever your ps is
   team_id_list[[team]] <- gids
 }
