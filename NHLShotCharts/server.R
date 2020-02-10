@@ -17,10 +17,11 @@ shinyServer(function(input, output, session) {
       return(NULL)
     
     if (input$player %in% shots$player_fullName)
-    shots <- shots[which(shots$player_fullName==input$player),]
-    shots <- subset(shots, result_secondaryType %in% input$shot_type)
-    shots <- subset(shots, about_period %in% input$period)
-    shots <- subset(shots, about_dateTime >= input$dateRange[1] & about_dateTime <= input$dateRange[2])
+      shots <- shots[which(shots$player_fullName==input$player),]
+      shots <- subset(shots, result_secondaryType %in% input$shot_type)
+      shots <- subset(shots, about_period %in% input$period)
+      shots <- subset(shots, result_strength_name %in% input$strength_name | is.na(result_strength_name))
+      shots <- subset(shots, about_dateTime >= input$dateRange[1] & about_dateTime <= input$dateRange[2])
   })
   
   output$plot<-renderPlotly({  
@@ -99,6 +100,7 @@ shinyServer(function(input, output, session) {
                                        '<br>Period: ', about_period,
                                        '<br>Away Goals: ', about_goals_away, 
                                        '<br>Home Goals (goal included if scored): ', about_goals_home,
+                                       '<br>Strength Type: ', result_strength_name,
                                        '<br>Description: ', result_description,
                                        '<br>Team Name: ', team_name))) +
       gg_rink(side = "right", specs = "nhl") +

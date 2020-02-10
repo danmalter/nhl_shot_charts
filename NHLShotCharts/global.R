@@ -6,6 +6,7 @@ library(data.table)
 library(shiny)
 library(shinydashboard)
 library(plotly)
+library(tidyr)
 library(lubridate)
 
 ### Extract data from SQLite Table ###
@@ -26,3 +27,4 @@ shots <- events %>%
   # remove shots below goal line
   filter(abs(coordinates_x) <= 90) %>%
   filter(result_event == 'Shot' | result_event == 'Goal' & (playerType == 'Scorer' | playerType == 'Shooter'))
+

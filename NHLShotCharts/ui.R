@@ -24,6 +24,12 @@ shinyUI(dashboardPage(skin="black",
                                                selected=c("Backhand", "Slap Shot", "Snap Shot", "Tip-In", "Wrap-around", "Wrist Shot"), 
                                                inline = TRUE)), 
                           menuItem(
+                            checkboxGroupInput("strength_name", 
+                                             label = span(tagList(icon("hockey-puck"), " Strength Type (Goals Only):")),
+                                             c("Even", "Power Play", "Short Handed"),
+                                             selected=c("Even", "Power Play", "Short Handed"), 
+                                             inline = TRUE)), 
+                          menuItem(
                             checkboxGroupInput("period", 
                                                label = span(tagList(icon("clipboard"), " Period:")),
                                                c("1", "2", "3", "4", "5"),

@@ -177,6 +177,7 @@ p <- ggplot(shots, aes(x = coordinates_x, y = coordinates_y,
                                     '<br>Away Goals: ', about_goals_away, 
                                     '<br>Home Goals (goal included if scored): ', about_goals_home,
                                     '<br>Team Name: ', team_name, 
+                                    '<br>Strength Type: ', result_strength_name,
                                     '<br>Description: ', result_description))) +
   gg_rink(side = "right", specs = "nhl") +
   gg_rink(side = "left", specs = "nhl") +
