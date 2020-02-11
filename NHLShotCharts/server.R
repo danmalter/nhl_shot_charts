@@ -98,11 +98,11 @@ shinyServer(function(input, output, session) {
                           text = paste('Result: ', result_event,
                                        '<br>Shot Type: ', result_secondaryType,
                                        '<br>Period: ', about_period,
-                                       '<br>Away Goals: ', about_goals_away, 
-                                       '<br>Home Goals (goal included if scored): ', about_goals_home,
+                                       paste('<br>Score: ', home_team, about_goals_home, "vs", away_team, about_goals_away),
                                        '<br>Strength Type: ', result_strength_name,
                                        '<br>Description: ', result_description,
-                                       '<br>Team Name: ', team_name))) +
+                                       '<br>Date: ', about_dateTime,
+                                       '<br>Player\'s Team: ', team_name))) +
       gg_rink(side = "right", specs = "nhl") +
       gg_rink(side = "left", specs = "nhl") +
       geom_point(aes(color = result_event , shape = result_event),
@@ -125,6 +125,10 @@ shinyServer(function(input, output, session) {
     
     ggplotly(p, tooltip="text")
   }) 
+  
+  output$text1 <- renderText({HTML(paste("- The score in the shot chart hover is the score at the time of the shot or goal. It includes the goal if the shot was scored.",
+                                         "<br>- The home team is listed second in the score of the shot chart hover.", sep = "<br/>"))
+  })
   
   
 })

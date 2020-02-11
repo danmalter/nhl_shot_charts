@@ -52,6 +52,7 @@ events <- dbGetQuery(mydb, 'SELECT *
                             FROM events')
 players <- dbGetQuery(mydb, 'SELECT * FROM players')
 teams <- dbGetQuery(mydb, 'SELECT * FROM teams')
+game_info <- dbGetQuery(mydb, 'SELECT * FROM game_info')
 
 # change datetime format from UTC to EST
 events$about_dateTime <- ymd_hms(events$about_dateTime, tz = "America/New_York")
@@ -64,6 +65,9 @@ shots <- events %>%
   filter(player_fullName == 'J.T. Compher')
 
 shots <- shots %>% group_by(result_event) %>% mutate(shot_type_count = n())  # get count by group to order point layers in ggplot
+
+# merge game info to get home and away team
+shots <- merge(x = shots, y = game_info[ , c("game_id", "home_team", "away_team", "venue")], by = "game_id", all.x=TRUE)
 
 # team colors - https://teamcolorcodes.com/nhl-team-color-codes/
 shot_color <- unique(ifelse(shots$team_triCode == 'NJD', "#CE1126", 
@@ -174,11 +178,11 @@ p <- ggplot(shots, aes(x = coordinates_x, y = coordinates_y,
                        text = paste('Result: ', result_event,
                                     '<br>Shot Type: ', result_secondaryType,
                                     '<br>Period: ', about_period,
-                                    '<br>Away Goals: ', about_goals_away, 
-                                    '<br>Home Goals (goal included if scored): ', about_goals_home,
-                                    '<br>Team Name: ', team_name, 
+                                    paste('<br>Score: ', home_team, about_goals_home, "vs", away_team, about_goals_away, "(goal included if scored)"),
                                     '<br>Strength Type: ', result_strength_name,
-                                    '<br>Description: ', result_description))) +
+                                    '<br>Description: ', result_description,
+                                    '<br>Date: ', about_dateTime,
+                                    '<br>Player\'s Team: ', team_name))) +
   gg_rink(side = "right", specs = "nhl") +
   gg_rink(side = "left", specs = "nhl") +
   geom_point(aes(color = result_event , shape = result_event),

@@ -15,6 +15,7 @@ events <- dbGetQuery(mydb, 'SELECT *
                             FROM events')
 players <- dbGetQuery(mydb, 'SELECT * FROM players')
 teams <- dbGetQuery(mydb, 'SELECT * FROM teams')
+game_info <- dbGetQuery(mydb, 'SELECT * FROM game_info')
 
 # Insert hockey rink
 source('gg-rink.R')
@@ -27,4 +28,7 @@ shots <- events %>%
   # remove shots below goal line
   filter(abs(coordinates_x) <= 90) %>%
   filter(result_event == 'Shot' | result_event == 'Goal' & (playerType == 'Scorer' | playerType == 'Shooter'))
+
+# merge game info to get home and away team
+shots <- merge(x = shots, y = game_info[ , c("game_id", "home_team", "away_team", "venue")], by = "game_id", all.x=TRUE)
 

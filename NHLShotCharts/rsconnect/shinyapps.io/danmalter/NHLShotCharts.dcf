@@ -5,8 +5,8 @@ account: danmalter
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1767300
-bundleId: 2790326
+bundleId: 2790960
 url: https://danmalter.shinyapps.io/NHLShotCharts/
-when: 1581378049.53663
+when: 1581396386.63779
 asMultiple: FALSE
 asStatic: FALSE

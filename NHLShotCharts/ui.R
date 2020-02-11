@@ -12,12 +12,6 @@ shinyUI(dashboardPage(skin="black",
                                  HTML
                                  ("<div style='font-size: 12px;'> Search above for players. Loading may take <br> a few seconds.</div>"))),
                           menuItem(
-                            dateRangeInput('dateRange',
-                                           label = span(tagList(icon("calendar"), "Date Range:")),
-                                           start = min(events$about_dateTime), max(events$about_dateTime),
-                                           format = "yyyy-mm-dd"))
-                        ),
-                          menuItem(
                             checkboxGroupInput("shot_type", 
                                                label = span(tagList(icon("hockey-puck"), " Shot Type:")),
                                                c("Backhand", "Slap Shot", "Snap Shot", "Tip-In", "Wrap-around", "Wrist Shot"),
@@ -36,7 +30,12 @@ shinyUI(dashboardPage(skin="black",
                                                selected=c("1", "2", "3"), 
                                                inline = TRUE))
                       ),
-  
+                      menuItem(
+                        dateRangeInput('dateRange',
+                                       label = span(tagList(icon("calendar"), "Date Range:")),
+                                       start = min(events$about_dateTime), max(events$about_dateTime),
+                                       format = "yyyy-mm-dd"))
+                      ),
                       dashboardBody(
                         tags$head(
                           tags$style(type="text/css", "select { max-width: 360px; }"),
@@ -78,10 +77,16 @@ shinyUI(dashboardPage(skin="black",
                                   )
                           ),
                           tabItem(tabName = "offensiveShotChart",
-                                  box(plotlyOutput("plot"), title = "NHL Shot Charts - 2019-2020", status="primary", width=10, collapsible = TRUE))
-                                  #,
-                                  #HTML('<br/>'),
-                                  #box(DT::dataTableOutput("table"), title = "Table of Players", width=12, collapsible = TRUE))
+                                  box(plotlyOutput("plot"), title = "NHL Shot Charts - 2019-2020", status="primary", width=10, collapsible = TRUE)
+                                  ,
+                                  HTML('<br/>'),
+                                  box(title = "Notes",
+                                      status = "primary",
+                                      solidHeader = F,
+                                      collapsible = F,
+                                      width = 10,
+                                      fluidRow(column(width = 10, htmlOutput("text1")),
+                                               column(width = 2, align = "center"))))
                           
                         )
                         
